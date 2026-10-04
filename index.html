@@ -3,41 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CHESS TEAM 2 - Mobile Edition</title>
+    <title>CHESS TEAM 2 - Toman v2 vs Kantou Manji (Full Avatar & Castling)</title>
     <style>
         :root {
-            --bg-body: #0b1120;
-            --bg-hud: #0f172a;
-            --bg-card: #070a13;
-            --border-hud: #1e293b;
-            --accent-cyan: #38bdf8;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
-            --accent-blue: #0284c7;
+            /* Background Slate Modern */
+            --bg-body: #141824;
+            --bg-hud: #1e2433;
+            --bg-card: #181d2a;
+            --border-hud: #3b4458;
+            --accent-silver: #e2e8f0;
+            --accent-white: #ffffff;
+            --accent-dark: #242c3d;
             --text-main: #f8fafc;
-            --text-sub: #64748b;
+            --text-sub: #94a3b8;
 
-            /* Slate Classic Theme */
-            --sq-light: #e8eef6;
-            --sq-dark: #4a6584;
-            --sq-last-light: #bfdbfe;
-            --sq-last-dark: #324861;
-            --sq-selected: #7dd3fc;
-            --sq-border: #1e293b;
-            --coord-fg: #94a3b8;
+            /* Default: Chess.com Classic Green */
+            --sq-light: #eeeed2;
+            --sq-dark: #769656;
+            --sq-last-light: #f7f769;
+            --sq-last-dark: #baca44;
+            --sq-selected: #f6f669;
+            --sq-border: #4e6a39;
+            --coord-fg: #607d4b;
 
-            /* Ukuran petak responsif layar HP */
             --sq-size: min(11vw, 45px);
         }
 
-        body.chess-green {
-            --sq-light: #eeeed2;
-            --sq-dark: #769656;
-            --sq-last-light: #f7f783;
-            --sq-last-dark: #baca44;
-            --sq-selected: #f6f669;
-            --sq-border: #3b5323;
-            --coord-fg: #6b8055;
+        /* TEMA CHESS.COM WOOD */
+        body.chess-wood {
+            --sq-light: #f0d9b5;
+            --sq-dark: #b58863;
+            --sq-last-light: #ced26b;
+            --sq-last-dark: #aaa23a;
+            --sq-selected: #d8c358;
+            --sq-border: #7f5836;
+            --coord-fg: #a87954;
+        }
+
+        /* TEMA CYBER REVENGERS HIGH-CONTRAST */
+        body.chess-cyber {
+            --bg-body: #121622;
+            --bg-hud: #1a202e;
+            --bg-card: #151926;
+            --border-hud: #475569;
+            --accent-silver: #ffffff;
+            --sq-light: #d8e2ec;
+            --sq-dark: #475569;
+            --sq-last-light: #fef08a;
+            --sq-last-dark: #ca8a04;
+            --sq-selected: #38bdf8;
+            --sq-border: #94a3b8;
+            --coord-fg: #cbd5e1;
         }
 
         * {
@@ -79,72 +95,55 @@
 
         .title-h1 {
             font-family: Impact, sans-serif;
-            font-size: 19px;
-            color: var(--accent-cyan);
-            letter-spacing: 0.5px;
+            font-size: 20px;
+            color: #ffffff;
+            letter-spacing: 1px;
         }
 
         .theme-selector {
             background: var(--bg-card);
             border: 1px solid var(--border-hud);
-            color: var(--accent-cyan);
-            padding: 3px 6px;
+            color: #f8fafc;
+            padding: 5px 8px;
             border-radius: 4px;
-            font-size: 10px;
+            font-size: 11px;
             outline: none;
         }
 
+        /* STATUS BOX RINGKAS */
         .vs-box {
             width: 100%;
             background: var(--bg-card);
             border: 1px solid var(--border-hud);
-            padding: 6px 10px;
+            padding: 10px 14px;
             border-radius: 6px;
             display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .player-row {
-            display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
-            font-size: 11px;
-            font-weight: bold;
         }
-
-        .player-left {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .badge-turn {
-            font-family: 'Consolas', monospace;
-            font-size: 9px;
-            display: none;
-        }
-        .badge-turn.active { display: inline-block; }
 
         .status-badge {
-            margin-top: 2px;
-            padding-top: 3px;
-            border-top: 1px solid var(--border-hud);
             font-family: 'Consolas', monospace;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
-            color: #facc15;
+            color: #94a3b8;
+            letter-spacing: 0.8px;
             text-align: center;
         }
 
         /* PAPAN CATUR */
         .board-container {
             position: relative;
-            background: #060911;
+            background: #1e2430;
             padding: 16px;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 2px solid var(--sq-border);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+        }
+
+        body.chess-cyber .board-container {
+            border: 2px solid #64748b;
+            box-shadow: 0 0 16px rgba(100, 116, 139, 0.25);
         }
 
         .board {
@@ -169,19 +168,77 @@
 
         .square.light { background-color: var(--sq-light); }
         .square.dark { background-color: var(--sq-dark); }
-        .square.selected { background-color: var(--sq-selected) !important; }
+        .square.selected { background-color: var(--sq-selected) !important; color: #000 !important; }
         .square.last-light { background-color: var(--sq-last-light); }
         .square.last-dark { background-color: var(--sq-last-dark); }
-        .square.check { background-color: #f87171 !important; }
+        .square.check { background-color: #ef4444 !important; }
 
         .piece-white {
             color: #ffffff;
-            text-shadow: 0.6px 0 0 #1e293b, -0.6px 0 0 #1e293b, 0 0.6px 0 #1e293b, 0 -0.6px 0 #1e293b;
+            text-shadow: 1px 1px 2px #000000, -1px -1px 2px #000000;
         }
 
         .piece-black {
-            color: #090d16;
-            text-shadow: 0.8px 0 0 #cbd5e1, -0.8px 0 0 #cbd5e1, 0 0.8px 0 #cbd5e1, 0 -0.8px 0 #cbd5e1;
+            color: #0f172a;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
+        }
+
+        .cyber-avatar-wrap {
+            width: 88%;
+            height: 88%;
+            border-radius: 50%;
+            overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #1e2433;
+        }
+
+        .cyber-avatar-wrap.white-team {
+            border: 2px solid #38bdf8;
+            box-shadow: 0 0 6px rgba(56, 189, 248, 0.8);
+        }
+
+        .cyber-avatar-wrap.black-team {
+            border: 2px solid #f97316;
+            box-shadow: 0 0 6px rgba(249, 115, 22, 0.8);
+            filter: brightness(1.05);
+        }
+
+        .cyber-avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center top;
+            pointer-events: none;
+        }
+
+        .piece-fullname-badge {
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1.5px solid #38bdf8;
+            border-radius: 4px;
+            padding: 1px 4px;
+            font-size: 8px;
+            font-family: 'Consolas', monospace;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+            z-index: 10;
+            pointer-events: none;
+            animation: badgePop 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes badgePop {
+            0% { transform: translateX(-50%) scale(0.4); opacity: 0; }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; }
         }
 
         .animated-flying-piece {
@@ -199,23 +256,25 @@
         }
 
         .valid-dot {
-            width: calc(var(--sq-size) * 0.28);
-            height: calc(var(--sq-size) * 0.28);
-            background-color: var(--accent-blue);
+            width: calc(var(--sq-size) * 0.32);
+            height: calc(var(--sq-size) * 0.32);
+            background-color: #38bdf8;
             border-radius: 50%;
             pointer-events: none;
+            box-shadow: 0 0 5px rgba(56, 189, 248, 0.8);
         }
 
         .valid-capture {
             position: absolute;
             inset: 2px;
-            border: 2px solid var(--accent-red);
+            border: 2.5px solid #ef4444;
+            border-radius: 50%;
             pointer-events: none;
         }
 
         .coord-x, .coord-y {
             position: absolute;
-            font-size: 8px;
+            font-size: 9px;
             font-weight: bold;
             color: var(--coord-fg);
             display: flex;
@@ -240,7 +299,6 @@
         .coord-y.left { left: 2px; }
         .coord-y.right { right: 2px; }
 
-        /* KONTROL BAWAH */
         .mobile-dock {
             width: 100%;
             background: var(--bg-hud);
@@ -263,31 +321,40 @@
             justify-content: center;
             align-items: center;
             padding: 6px 2px;
-            background: #111827;
+            background: #252d3d;
             border: 1px solid var(--border-hud);
             border-radius: 4px;
             font-size: 10px;
             font-weight: bold;
             cursor: pointer;
             color: #94a3b8;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease, box-shadow 0.15s ease;
+            will-change: transform;
         }
 
+        .card-level:hover { transform: scale(1.04); }
+        .card-level:active { transform: scale(0.91); }
+
         .card-level.active {
-            background: var(--accent-blue);
-            color: #ffffff;
-            border-color: transparent;
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #ffffff;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
         }
 
         select.mobile-select {
             width: 100%;
             background: var(--bg-card);
             border: 1px solid var(--border-hud);
-            color: var(--accent-cyan);
+            color: #f8fafc;
             padding: 6px;
             border-radius: 4px;
             font-size: 11px;
             outline: none;
+            transition: border-color 0.15s ease;
         }
+
+        select.mobile-select:focus { border-color: #38bdf8; }
 
         .btn-group-mobile {
             display: grid;
@@ -302,35 +369,47 @@
             font-weight: bold;
             border-radius: 4px;
             cursor: pointer;
-            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease, box-shadow 0.15s ease;
+            will-change: transform;
         }
 
-        .btn-start { background: var(--accent-blue); }
-        .btn-reset { background: var(--accent-red); }
-        .btn-history { background: #059669; }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        button:active { transform: scale(0.92); }
+
+        .btn-start { background: #38bdf8; color: #090a0f; }
+        .btn-start:hover { background: #7dd3fc; }
+
+        .btn-reset { background: #475569; color: #ffffff; }
+        .btn-reset:hover { background: #64748b; }
+
+        .btn-history { background: #252d3d; color: #e2e8f0; border: 1px solid #475569; }
+        .btn-history:hover { background: #334155; }
 
         .log-box-mobile {
             background: var(--bg-card);
             border: 1px solid var(--border-hud);
-            height: 44px;
+            height: 48px;
             overflow-y: auto;
-            padding: 4px 6px;
+            padding: 5px 8px;
             font-family: 'Consolas', monospace;
-            font-size: 9px;
-            color: var(--accent-cyan);
+            font-size: 10px;
+            color: #cbd5e1;
             white-space: pre-line;
             border-radius: 4px;
         }
 
-        /* MODAL RIWAYAT */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.75);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -338,8 +417,8 @@
         }
 
         .modal-content {
-            background: #0b1120;
-            border: 1px solid var(--border-hud);
+            background: #181d2a;
+            border: 1px solid #475569;
             border-radius: 8px;
             width: 100%;
             max-width: 440px;
@@ -356,7 +435,7 @@
         }
 
         .modal-header h3 {
-            color: var(--accent-cyan);
+            color: #ffffff;
             font-size: 12px;
         }
 
@@ -367,11 +446,13 @@
             padding: 0 4px;
         }
 
+        .close-btn:hover { transform: scale(1.15); }
+
         .table-wrapper {
-            background: #0f172a;
+            background: #10141d;
             max-height: 220px;
             overflow-y: auto;
-            border: 1px solid var(--border-hud);
+            border: 1px solid #2d3748;
             border-radius: 4px;
         }
 
@@ -383,8 +464,8 @@
         }
 
         th {
-            background: #1e293b;
-            color: var(--accent-cyan);
+            background: #242c3d;
+            color: #ffffff;
             padding: 6px;
             position: sticky;
             top: 0;
@@ -392,7 +473,7 @@
 
         td {
             padding: 6px;
-            border-bottom: 1px solid #1e293b;
+            border-bottom: 1px solid #242c3d;
             color: #e2e8f0;
         }
     </style>
@@ -403,29 +484,16 @@
         <!-- HEADER -->
         <div class="mobile-header">
             <div class="title-h1">CHESS TEAM 2</div>
-            <select class="theme-selector" onchange="changeTheme(this.value)">
-                <option value="slate">Tema Slate</option>
-                <option value="green">Tema Hijau</option>
+            <select class="theme-selector" id="themeSelect" onchange="changeTheme(this.value)">
+                <option value="green" selected>Chess.com Classic Green (Hijau Terang)</option>
+                <option value="wood">Chess.com Classic Wood (Cokelat Kayu)</option>
+                <option value="cyber">Cyber Revengers High-Contrast</option>
             </select>
         </div>
 
-        <!-- INFO VS & STATUS -->
+        <!-- STATUS BOX (HANYA SATU STATUS BERSIH) -->
         <div class="vs-box">
-            <div class="player-row">
-                <div class="player-left">
-                    <span id="dotWhite" style="color:#38bdf8">■</span>
-                    <span id="txtWhiteStatus">PUTIH : ANDA</span>
-                </div>
-                <span id="badgeWhite" class="badge-turn active" style="color:var(--accent-cyan)">[GILIRAN]</span>
-            </div>
-            <div class="player-row">
-                <div class="player-left">
-                    <span id="dotBlack" style="color:#334155">■</span>
-                    <span id="txtBlackStatus">HITAM : BOT AI</span>
-                </div>
-                <span id="badgeBlack" class="badge-turn" style="color:var(--accent-red)">[GILIRAN]</span>
-            </div>
-            <div class="status-badge" id="lblGameState">STATUS: BERJALAN</div>
+            <div class="status-badge" id="lblGameState">STATUS: MENUNGGU MULAI</div>
         </div>
 
         <!-- PAPAN CATUR -->
@@ -441,16 +509,16 @@
 
         <!-- PANEL BAWAH -->
         <div class="mobile-dock">
-            <div class="dock-row">
+            <div class="dock-row" id="difficultyRow">
                 <div class="card-level" id="lvl-Pemula" onclick="setLevel('Pemula')">Pemula ★</div>
                 <div class="card-level active" id="lvl-Menengah" onclick="setLevel('Menengah')">Menengah ★★</div>
                 <div class="card-level" id="lvl-Master" onclick="setLevel('Master')">Master ★★★</div>
             </div>
 
             <select class="mobile-select" id="modeSelect" onchange="syncPlayerRoles()">
-                <option value="man_bot">Anda (Putih) vs Bot (Hitam)</option>
-                <option value="bot_man">Bot (Putih) vs Anda (Hitam)</option>
-                <option value="two_players">Main Berdua (1 Handphone)</option>
+                <option value="two_players" selected>Player vs Player: Touman v2 vs Kantou Manji</option>
+                <option value="man_bot">Anda (Touman v2) vs Bot AI (Kantou)</option>
+                <option value="bot_man">Bot AI (Touman v2) vs Anda (Kantou)</option>
             </select>
 
             <div class="btn-group-mobile">
@@ -459,7 +527,7 @@
                 <button class="btn-history" onclick="showHistoryPopup()">📊 RIWAYAT</button>
             </div>
 
-            <div class="log-box-mobile" id="logBox">Game dimulai! Giliran Putih.</div>
+            <div class="log-box-mobile" id="logBox">Klik tombol "▶ MULAI" untuk memulai pertandingan.</div>
         </div>
     </div>
 
@@ -488,6 +556,39 @@
     </div>
 
     <script>
+        const FULL_PIECE_NAMES = {
+            'K': 'KING',
+            'Q': 'QUEEN',
+            'B': 'BISHOP',
+            'N': 'KNIGHT',
+            'R': 'ROOK',
+            'P': 'PAWN'
+        };
+
+        const PLAYER_TOUMAN_AVATARS = {
+            'K': encodeURI('takemichi.jpg'),
+            'Q': encodeURI('chifuyu.jpg'),
+            'B_LEFT': encodeURI('senju.jpg'),
+            'B_RIGHT': encodeURI('inui.jpg'),
+            'N_LEFT': encodeURI('angry.jpg'),
+            'N_RIGHT': encodeURI('simley.jpg'),
+            'R_LEFT': encodeURI('mitsuya.jpg'),
+            'R_RIGHT': encodeURI('taiju.jpg'),
+            'P': encodeURI('krocotoman.jpg')
+        };
+
+        const BOT_KANTOU_AVATARS = {
+            'K': encodeURI('mikey.jpg'),
+            'Q': encodeURI('sanzu.jpg'),
+            'B_LEFT': encodeURI('kakucho.jpg'),
+            'B_RIGHT': encodeURI('wakasa.jpg'),
+            'N_LEFT': encodeURI('ran haitani.jpg'),
+            'N_RIGHT': encodeURI('rindou haitani.jpg'),
+            'R_LEFT': encodeURI('keizo.jpg'),
+            'R_RIGHT': encodeURI('mochi.jpg'),
+            'P': encodeURI('krocokanto.jpg')
+        };
+
         const UNICODE_PIECES = {
             'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
             'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
@@ -498,27 +599,45 @@
             'p': -100, 'n': -320, 'b': -330, 'r': -500, 'q': -900, 'k': -20000
         };
 
-        // Bidak langsung diisi sejak awal
-        let boardState = [
-            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-            ['.', '.', '.', '.', '.', '.', '.', '.'],
-            ['.', '.', '.', '.', '.', '.', '.', '.'],
-            ['.', '.', '.', '.', '.', '.', '.', '.'],
-            ['.', '.', '.', '.', '.', '.', '.', '.'],
-            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
-        ];
+        let currentTheme = 'green';
+
+        function getInitialBoard() {
+            return [
+                [['r', 'R_LEFT'], ['n', 'N_LEFT'], ['b', 'B_LEFT'], ['q', 'Q'], ['k', 'K'], ['b', 'B_RIGHT'], ['n', 'N_RIGHT'], ['r', 'R_RIGHT']],
+                [['p', 'P'], ['p', 'P'], ['p', 'P'], ['p', 'P'], ['p', 'P'], ['p', 'P'], ['p', 'P'], ['p', 'P']],
+                ['.', '.', '.', '.', '.', '.', '.', '.'],
+                ['.', '.', '.', '.', '.', '.', '.', '.'],
+                ['.', '.', '.', '.', '.', '.', '.', '.'],
+                ['.', '.', '.', '.', '.', '.', '.', '.'],
+                [['P', 'P'], ['P', 'P'], ['P', 'P'], ['P', 'P'], ['P', 'P'], ['P', 'P'], ['P', 'P'], ['P', 'P']],
+                [['R', 'R_LEFT'], ['N', 'N_LEFT'], ['B', 'B_LEFT'], ['Q', 'Q'], ['K', 'K'], ['B', 'B_RIGHT'], ['N', 'N_RIGHT'], ['R', 'R_RIGHT']]
+            ];
+        }
+
+        function cloneBoard(b) {
+            return b.map(row => row.map(cell => Array.isArray(cell) ? [...cell] : cell));
+        }
+
+        let castlingRights = {
+            whiteKingMoved: false,
+            whiteRookLeftMoved: false,
+            whiteRookRightMoved: false,
+            blackKingMoved: false,
+            blackRookLeftMoved: false,
+            blackRookRightMoved: false
+        };
+
+        let boardState = getInitialBoard();
 
         let turn = 'white';
-        let gameActive = true;
+        let gameActive = false;
         let selectedPos = null;
         let validMoves = [];
         let lastMove = null;
         let moveCount = 0;
         let aiLevel = "Menengah";
-        let playerColor = "white";
-        let botColor = "black";
+        let playerColor = "both";
+        let botColor = null;
         let isAnimating = false;
         let gameRecorded = false;
 
@@ -547,26 +666,32 @@
         }
 
         function changeTheme(theme) {
-            document.body.className = theme === 'green' ? 'chess-green' : '';
+            currentTheme = theme;
+            document.body.className = '';
+            if (theme === 'wood') document.body.className = 'chess-wood';
+            if (theme === 'cyber') document.body.className = 'chess-cyber';
+            renderBoard();
         }
 
         function syncPlayerRoles() {
             const mode = document.getElementById('modeSelect').value;
-            if (mode === "man_bot") {
-                playerColor = "white"; botColor = "black";
-                document.getElementById('txtWhiteStatus').innerText = "PUTIH : ANDA";
-                document.getElementById('txtBlackStatus').innerText = "HITAM : BOT AI";
+            const diffRow = document.getElementById('difficultyRow');
+
+            if (mode === "two_players") {
+                playerColor = "both";
+                botColor = null;
+                if (diffRow) diffRow.style.opacity = "0.4";
+            } else if (mode === "man_bot") {
+                playerColor = "white";
+                botColor = "black";
+                if (diffRow) diffRow.style.opacity = "1";
             } else if (mode === "bot_man") {
-                playerColor = "black"; botColor = "white";
-                document.getElementById('txtWhiteStatus').innerText = "PUTIH : BOT AI";
-                document.getElementById('txtBlackStatus').innerText = "HITAM : ANDA";
-            } else {
-                playerColor = "both"; botColor = null;
-                document.getElementById('txtWhiteStatus').innerText = "PUTIH : PEMAIN 1";
-                document.getElementById('txtBlackStatus').innerText = "HITAM : PEMAIN 2";
+                playerColor = "black";
+                botColor = "white";
+                if (diffRow) diffRow.style.opacity = "1";
             }
+
             initCoords();
-            updateBadges();
             renderBoard();
 
             if (turn === botColor && gameActive) {
@@ -574,36 +699,10 @@
             }
         }
 
-        function updateBadges() {
-            const bW = document.getElementById('badgeWhite');
-            const bB = document.getElementById('badgeBlack');
-            const dW = document.getElementById('dotWhite');
-            const dB = document.getElementById('dotBlack');
-
-            if (!gameActive) {
-                bW.classList.remove('active');
-                bB.classList.remove('active');
-                dW.style.color = "#64748b";
-                dB.style.color = "#64748b";
-                return;
-            }
-            if (turn === 'white') {
-                bW.classList.add('active');
-                bB.classList.remove('active');
-                dW.style.color = "#38bdf8";
-                dB.style.color = "#334155";
-            } else {
-                bW.classList.remove('active');
-                bB.classList.add('active');
-                dB.style.color = "#ef4444";
-                dW.style.color = "#334155";
-            }
-        }
-
         function saveGameToHistory(winner, reason) {
             if (gameRecorded) return;
             const history = JSON.parse(localStorage.getItem('chess_match_history') || '[]');
-            const modeText = `${document.getElementById('modeSelect').selectedOptions[0].text} [${aiLevel}]`;
+            const modeText = `${document.getElementById('modeSelect').selectedOptions[0].text}`;
             
             const newRecord = {
                 id: history.length + 1,
@@ -628,9 +727,9 @@
                 history.forEach(r => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td style="text-align: center; color: var(--accent-cyan); font-weight:bold;">${r.id}</td>
+                        <td style="text-align: center; color: #ffffff; font-weight:bold;">${r.id}</td>
                         <td>${r.mode}</td>
-                        <td style="text-align: center; font-weight:bold; color:${r.winner === 'Putih' ? '#38bdf8' : (r.winner === 'Hitam' ? '#ef4444' : '#facc15')}">${r.winner}</td>
+                        <td style="text-align: center; font-weight:bold; color:#38bdf8">${r.winner}</td>
                         <td style="text-align: center;">${r.moves}</td>
                         <td>${r.reason}</td>
                     `;
@@ -655,21 +754,20 @@
             validMoves = [];
             lastMove = null;
 
-            boardState = [
-                ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-                ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-                ['.', '.', '.', '.', '.', '.', '.', '.'],
-                ['.', '.', '.', '.', '.', '.', '.', '.'],
-                ['.', '.', '.', '.', '.', '.', '.', '.'],
-                ['.', '.', '.', '.', '.', '.', '.', '.'],
-                ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-                ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
-            ];
+            castlingRights = {
+                whiteKingMoved: false,
+                whiteRookLeftMoved: false,
+                whiteRookRightMoved: false,
+                blackKingMoved: false,
+                blackRookLeftMoved: false,
+                blackRookRightMoved: false
+            };
 
-            document.getElementById('logBox').innerText = "Game dimulai! Giliran Putih.";
-            document.getElementById('lblGameState').innerText = "STATUS: BERJALAN";
-            document.getElementById('lblGameState').style.color = "#10b981";
-            updateBadges();
+            boardState = getInitialBoard();
+
+            document.getElementById('logBox').innerText = "Game aktif! Giliran Touman v2 (Putih).";
+            document.getElementById('lblGameState').innerText = "STATUS: PERMAINAN DIMULAI";
+            document.getElementById('lblGameState').style.color = "#38bdf8";
             renderBoard();
 
             if (turn === botColor) {
@@ -682,30 +780,58 @@
             if (recordAbandoned && gameActive && moveCount > 0) {
                 saveGameToHistory("Dibatalkan", "Reset game");
             }
-            startGame();
+
+            gameActive = false;
+            turn = 'white';
+            selectedPos = null;
+            validMoves = [];
+            lastMove = null;
+            moveCount = 0;
+
+            castlingRights = {
+                whiteKingMoved: false,
+                whiteRookLeftMoved: false,
+                whiteRookRightMoved: false,
+                blackKingMoved: false,
+                blackRookLeftMoved: false,
+                blackRookRightMoved: false
+            };
+
+            boardState = getInitialBoard();
+
+            document.getElementById('logBox').innerText = "Permainan direset. Klik ▶ MULAI untuk bermain.";
+            document.getElementById('lblGameState').innerText = "STATUS: MENUNGGU MULAI";
+            document.getElementById('lblGameState').style.color = "#94a3b8";
+            renderBoard();
         }
 
-        function getPieceColor(p) {
-            if (p === '.') return null;
-            return p === p.toUpperCase() ? 'white' : 'black';
+        function getPieceChar(cell) {
+            if (!cell || cell === '.') return '.';
+            return Array.isArray(cell) ? cell[0] : cell;
+        }
+
+        function getPieceColor(cell) {
+            const char = getPieceChar(cell);
+            if (char === '.') return null;
+            return char === char.toUpperCase() ? 'white' : 'black';
         }
 
         function rawMoves(board, r, c) {
-            const p = board[r][c];
-            if (p === '.') return [];
-            const color = getPieceColor(p);
+            const pieceChar = getPieceChar(board[r][c]);
+            if (pieceChar === '.') return [];
+            const color = getPieceColor(board[r][c]);
             const oppColor = (color === 'white') ? 'black' : 'white';
             const moves = [];
 
-            if (p.toLowerCase() === 'p') {
+            if (pieceChar.toLowerCase() === 'p') {
                 const dir = (color === 'white') ? -1 : 1;
                 const startRow = (color === 'white') ? 6 : 1;
 
                 const nr = r + dir;
-                if (nr >= 0 && nr < 8 && board[nr][c] === '.') {
+                if (nr >= 0 && nr < 8 && getPieceChar(board[nr][c]) === '.') {
                     moves.push([nr, c]);
                     const nr2 = r + 2 * dir;
-                    if (r === startRow && nr2 >= 0 && nr2 < 8 && board[nr2][c] === '.') {
+                    if (r === startRow && nr2 >= 0 && nr2 < 8 && getPieceChar(board[nr2][c]) === '.') {
                         moves.push([nr2, c]);
                     }
                 }
@@ -714,54 +840,75 @@
                     const nc = c + dc;
                     if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
                         const target = board[nr][nc];
-                        if (target !== '.' && getPieceColor(target) === oppColor) {
+                        if (getPieceChar(target) !== '.' && getPieceColor(target) === oppColor) {
                             moves.push([nr, nc]);
                         }
                     }
                 });
-            } else if (p.toLowerCase() === 'n') {
-                [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]].forEach(([dr, dc]) => {
+            } else if (pieceChar.toLowerCase() === 'n') {
+                const knightOffsets = [
+                    [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+                    [1, -2], [1, 2], [2, -1], [2, 1]
+                ];
+                knightOffsets.forEach(([dr, dc]) => {
                     const nr = r + dr, nc = c + dc;
                     if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
                         const target = board[nr][nc];
-                        if (target === '.' || getPieceColor(target) === oppColor) moves.push([nr, nc]);
+                        if (getPieceChar(target) === '.' || getPieceColor(target) === oppColor) {
+                            moves.push([nr, nc]);
+                        }
                     }
                 });
-            } else if (['r', 'b', 'q'].includes(p.toLowerCase())) {
-                let dirs = [];
-                if (['r', 'q'].includes(p.toLowerCase())) dirs.push([-1,0], [1,0], [0,-1], [0,1]);
-                if (['b', 'q'].includes(p.toLowerCase())) dirs.push([-1,-1], [-1,1], [1,-1], [1,1]);
+            } else if (['r', 'b', 'q'].includes(pieceChar.toLowerCase())) {
+                const directions = [];
+                if (['r', 'q'].includes(pieceChar.toLowerCase())) {
+                    directions.push([-1, 0], [1, 0], [0, -1], [0, 1]);
+                }
+                if (['b', 'q'].includes(pieceChar.toLowerCase())) {
+                    directions.push([-1, -1], [-1, 1], [1, -1], [1, 1]);
+                }
 
-                dirs.forEach(([dr, dc]) => {
+                directions.forEach(([dr, dc]) => {
                     let nr = r + dr, nc = c + dc;
                     while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
                         const target = board[nr][nc];
-                        if (target === '.') {
+                        if (getPieceChar(target) === '.') {
                             moves.push([nr, nc]);
                         } else {
-                            if (getPieceColor(target) === oppColor) moves.push([nr, nc]);
+                            if (getPieceColor(target) === oppColor) {
+                                moves.push([nr, nc]);
+                            }
                             break;
                         }
-                        nr += dr; nc += dc;
+                        nr += dr;
+                        nc += dc;
                     }
                 });
-            } else if (p.toLowerCase() === 'k') {
-                [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([dr, dc]) => {
+            } else if (pieceChar.toLowerCase() === 'k') {
+                const kingOffsets = [
+                    [-1, -1], [-1, 0], [-1, 1],
+                    [0, -1],           [0, 1],
+                    [1, -1],  [1, 0],  [1, 1]
+                ];
+                kingOffsets.forEach(([dr, dc]) => {
                     const nr = r + dr, nc = c + dc;
                     if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
                         const target = board[nr][nc];
-                        if (target === '.' || getPieceColor(target) === oppColor) moves.push([nr, nc]);
+                        if (getPieceChar(target) === '.' || getPieceColor(target) === oppColor) {
+                            moves.push([nr, nc]);
+                        }
                     }
                 });
             }
+
             return moves;
         }
 
         function findKing(board, color) {
-            const target = (color === 'white') ? 'K' : 'k';
+            const targetChar = (color === 'white') ? 'K' : 'k';
             for (let r = 0; r < 8; r++) {
                 for (let c = 0; c < 8; c++) {
-                    if (board[r][c] === target) return [r, c];
+                    if (getPieceChar(board[r][c]) === targetChar) return [r, c];
                 }
             }
             return null;
@@ -772,36 +919,48 @@
             const pawnDir = (attackerColor === 'white') ? 1 : -1;
             for (let dc of [-1, 1]) {
                 let pr = r + pawnDir, pc = c + dc;
-                if (pr >= 0 && pr < 8 && pc >= 0 && pc < 8 && board[pr][pc] === oppPawn) return true;
+                if (pr >= 0 && pr < 8 && pc >= 0 && pc < 8 && getPieceChar(board[pr][pc]) === oppPawn) {
+                    return true;
+                }
             }
 
             const oppKnight = (attackerColor === 'white') ? 'N' : 'n';
-            for (let [dr, dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]) {
+            const knightOffsets = [
+                [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+                [1, -2], [1, 2], [2, -1], [2, 1]
+            ];
+            for (let [dr, dc] of knightOffsets) {
                 let nr = r + dr, nc = c + dc;
-                if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8 && board[nr][nc] === oppKnight) return true;
+                if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8 && getPieceChar(board[nr][nc]) === oppKnight) {
+                    return true;
+                }
             }
 
             const straights = (attackerColor === 'white') ? ['R', 'Q'] : ['r', 'q'];
-            for (let [dr, dc] of [[-1,0],[1,0],[0,-1],[0,1]]) {
+            for (let [dr, dc] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
                 let nr = r + dr, nc = c + dc;
                 while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
-                    if (board[nr][nc] !== '.') {
-                        if (straights.includes(board[nr][nc])) return true;
+                    const char = getPieceChar(board[nr][nc]);
+                    if (char !== '.') {
+                        if (straights.includes(char)) return true;
                         break;
                     }
-                    nr += dr; nc += dc;
+                    nr += dr;
+                    nc += dc;
                 }
             }
 
             const diags = (attackerColor === 'white') ? ['B', 'Q'] : ['b', 'q'];
-            for (let [dr, dc] of [[-1,-1],[-1,1],[1,-1],[1,1]]) {
+            for (let [dr, dc] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) {
                 let nr = r + dr, nc = c + dc;
                 while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
-                    if (board[nr][nc] !== '.') {
-                        if (diags.includes(board[nr][nc])) return true;
+                    const char = getPieceChar(board[nr][nc]);
+                    if (char !== '.') {
+                        if (diags.includes(char)) return true;
                         break;
                     }
-                    nr += dr; nc += dc;
+                    nr += dr;
+                    nc += dc;
                 }
             }
 
@@ -810,9 +969,12 @@
                 for (let dc = -1; dc <= 1; dc++) {
                     if (dr === 0 && dc === 0) continue;
                     let nr = r + dr, nc = c + dc;
-                    if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8 && board[nr][nc] === oppKing) return true;
+                    if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8 && getPieceChar(board[nr][nc]) === oppKing) {
+                        return true;
+                    }
                 }
             }
+
             return false;
         }
 
@@ -824,18 +986,65 @@
         }
 
         function getLegalMoves(board, r, c, curTurn) {
-            const p = board[r][c];
-            if (p === '.' || getPieceColor(p) !== curTurn) return [];
-            const color = getPieceColor(p);
+            const cell = board[r][c];
+            if (getPieceChar(cell) === '.' || getPieceColor(cell) !== curTurn) return [];
+            const color = getPieceColor(cell);
             const candidates = rawMoves(board, r, c);
             const legal = [];
 
             candidates.forEach(([mr, mc]) => {
-                const temp = board.map(row => [...row]);
+                const temp = cloneBoard(board);
                 temp[mr][mc] = temp[r][c];
                 temp[r][c] = '.';
-                if (!isInCheck(temp, color)) legal.push([mr, mc]);
+                if (!isInCheck(temp, color)) {
+                    legal.push([mr, mc]);
+                }
             });
+
+            // LOGIKA ROKADE
+            const pieceChar = getPieceChar(cell);
+            if (pieceChar.toLowerCase() === 'k' && !isInCheck(board, color)) {
+                const oppColor = (color === 'white') ? 'black' : 'white';
+
+                if (color === 'white' && r === 7 && c === 4 && !castlingRights.whiteKingMoved) {
+                    if (!castlingRights.whiteRookRightMoved &&
+                        getPieceChar(board[7][5]) === '.' &&
+                        getPieceChar(board[7][6]) === '.' &&
+                        getPieceChar(board[7][7]).toUpperCase() === 'R') {
+                        if (!isSquareAttacked(board, 7, 5, oppColor) && !isSquareAttacked(board, 7, 6, oppColor)) {
+                            legal.push([7, 6]);
+                        }
+                    }
+                    if (!castlingRights.whiteRookLeftMoved &&
+                        getPieceChar(board[7][3]) === '.' &&
+                        getPieceChar(board[7][2]) === '.' &&
+                        getPieceChar(board[7][1]) === '.' &&
+                        getPieceChar(board[7][0]).toUpperCase() === 'R') {
+                        if (!isSquareAttacked(board, 7, 3, oppColor) && !isSquareAttacked(board, 7, 2, oppColor)) {
+                            legal.push([7, 2]);
+                        }
+                    }
+                } else if (color === 'black' && r === 0 && c === 4 && !castlingRights.blackKingMoved) {
+                    if (!castlingRights.blackRookRightMoved &&
+                        getPieceChar(board[0][5]) === '.' &&
+                        getPieceChar(board[0][6]) === '.' &&
+                        getPieceChar(board[0][7]).toLowerCase() === 'r') {
+                        if (!isSquareAttacked(board, 0, 5, oppColor) && !isSquareAttacked(board, 0, 6, oppColor)) {
+                            legal.push([0, 6]);
+                        }
+                    }
+                    if (!castlingRights.blackRookLeftMoved &&
+                        getPieceChar(board[0][3]) === '.' &&
+                        getPieceChar(board[0][2]) === '.' &&
+                        getPieceChar(board[0][1]) === '.' &&
+                        getPieceChar(board[0][0]).toLowerCase() === 'r') {
+                        if (!isSquareAttacked(board, 0, 3, oppColor) && !isSquareAttacked(board, 0, 2, oppColor)) {
+                            legal.push([0, 2]);
+                        }
+                    }
+                }
+            }
+
             return legal;
         }
 
@@ -843,7 +1052,7 @@
             const list = [];
             for (let r = 0; r < 8; r++) {
                 for (let c = 0; c < 8; c++) {
-                    if (board[r][c] !== '.' && getPieceColor(board[r][c]) === color) {
+                    if (getPieceChar(board[r][c]) !== '.' && getPieceColor(board[r][c]) === color) {
                         const m = getLegalMoves(board, r, c, color);
                         m.forEach(to => list.push({ from: [r, c], to }));
                     }
@@ -853,11 +1062,18 @@
         }
 
         function handleSquareClick(r, c) {
-            if (!gameActive || isAnimating || turn === botColor) return;
-            const piece = boardState[r][c];
+            if (!gameActive) {
+                const logBox = document.getElementById('logBox');
+                logBox.innerText = "Bidak terkunci. Silakan klik tombol '▶ MULAI' terlebih dahulu!";
+                return;
+            }
+            if (isAnimating) return;
+            if (playerColor !== "both" && turn === botColor) return;
+
+            const cell = boardState[r][c];
 
             if (!selectedPos) {
-                if (piece !== '.' && getPieceColor(piece) === turn) {
+                if (getPieceChar(cell) !== '.' && getPieceColor(cell) === turn) {
                     selectedPos = [r, c];
                     validMoves = getLegalMoves(boardState, r, c, turn);
                 }
@@ -869,7 +1085,7 @@
                     executeMove(sr, sc, r, c);
                     return;
                 } else {
-                    if (piece !== '.' && getPieceColor(piece) === turn) {
+                    if (getPieceChar(cell) !== '.' && getPieceColor(cell) === turn) {
                         selectedPos = [r, c];
                         validMoves = getLegalMoves(boardState, r, c, turn);
                     } else {
@@ -881,9 +1097,36 @@
             renderBoard();
         }
 
+        function getPieceHTML(cell, isSelectedPiece = false) {
+            const pieceChar = getPieceChar(cell);
+            if (pieceChar === '.') return '';
+
+            const isWhite = (pieceChar === pieceChar.toUpperCase());
+            const type = pieceChar.toUpperCase();
+            const subId = Array.isArray(cell) ? cell[1] : type;
+
+            if (currentTheme !== 'cyber') {
+                return `<span class="${isWhite ? 'piece-white' : 'piece-black'}">${UNICODE_PIECES[pieceChar]}</span>`;
+            }
+
+            const dict = isWhite ? PLAYER_TOUMAN_AVATARS : BOT_KANTOU_AVATARS;
+            const avatarFile = dict[subId] || dict[type];
+            const fullNameText = FULL_PIECE_NAMES[type] || 'PIECE';
+
+            const teamClass = isWhite ? 'white-team' : 'black-team';
+            const fullNameBadgeHTML = isSelectedPiece ? `<div class="piece-fullname-badge">${fullNameText}</div>` : '';
+
+            return `
+                <div class="cyber-avatar-wrap ${teamClass}">
+                    <img src="${avatarFile}" class="cyber-avatar-img" alt="${pieceChar}" onerror="this.parentElement.innerHTML='<span class=\\'${isWhite ? 'piece-white' : 'piece-black'}\\'>${UNICODE_PIECES[pieceChar]}</span>'">
+                    ${fullNameBadgeHTML}
+                </div>
+            `;
+        }
+
         function executeMove(sr, sc, r, c) {
             isAnimating = true;
-            let movingPiece = boardState[sr][sc];
+            let movingCell = Array.isArray(boardState[sr][sc]) ? [...boardState[sr][sc]] : boardState[sr][sc];
             boardState[sr][sc] = '.';
             validMoves = [];
             selectedPos = null;
@@ -901,8 +1144,8 @@
             const targetY = scr_r * sqWidth;
 
             const flyingEl = document.createElement('div');
-            flyingEl.className = `animated-flying-piece ${movingPiece === movingPiece.toUpperCase() ? 'piece-white' : 'piece-black'}`;
-            flyingEl.innerText = UNICODE_PIECES[movingPiece];
+            flyingEl.className = 'animated-flying-piece';
+            flyingEl.innerHTML = getPieceHTML(movingCell, true);
             boardEl.appendChild(flyingEl);
 
             const totalFrames = 12;
@@ -922,41 +1165,76 @@
                     setTimeout(animate, frameInterval);
                 } else {
                     flyingEl.remove();
-                    finalizeMove(sr, sc, r, c, movingPiece);
+                    finalizeMove(sr, sc, r, c, movingCell);
                 }
             }
             animate();
         }
 
-        function finalizeMove(sr, sc, r, c, movingPiece) {
+        function finalizeMove(sr, sc, r, c, movingCell) {
             moveCount++;
 
-            if (movingPiece === 'P' && r === 0) movingPiece = 'Q';
-            if (movingPiece === 'p' && r === 7) movingPiece = 'q';
+            let char = getPieceChar(movingCell);
+            let subId = Array.isArray(movingCell) ? movingCell[1] : char;
+            let castlingNotation = null;
 
-            boardState[r][c] = movingPiece;
+            if (char.toUpperCase() === 'K' && Math.abs(c - sc) === 2) {
+                if (c === 6) {
+                    castlingNotation = "O-O";
+                    let rookCell = boardState[r][7];
+                    boardState[r][7] = '.';
+                    boardState[r][5] = rookCell;
+                } else if (c === 2) {
+                    castlingNotation = "O-O-O";
+                    let rookCell = boardState[r][0];
+                    boardState[r][0] = '.';
+                    boardState[r][3] = rookCell;
+                }
+            }
+
+            if (char === 'K') castlingRights.whiteKingMoved = true;
+            if (char === 'k') castlingRights.blackKingMoved = true;
+            if (sr === 7 && sc === 0) castlingRights.whiteRookLeftMoved = true;
+            if (sr === 7 && sc === 7) castlingRights.whiteRookRightMoved = true;
+            if (sr === 0 && sc === 0) castlingRights.blackRookLeftMoved = true;
+            if (sr === 0 && sc === 7) castlingRights.blackRookRightMoved = true;
+
+            if (r === 7 && c === 0) castlingRights.whiteRookLeftMoved = true;
+            if (r === 7 && c === 7) castlingRights.whiteRookRightMoved = true;
+            if (r === 0 && c === 0) castlingRights.blackRookLeftMoved = true;
+            if (r === 0 && c === 7) castlingRights.blackRookRightMoved = true;
+
+            if (char === 'P' && r === 0) { char = 'Q'; subId = 'Q'; }
+            if (char === 'p' && r === 7) { char = 'q'; subId = 'Q'; }
+
+            boardState[r][c] = [char, subId];
             lastMove = [[sr, sc], [r, c]];
 
             const fromNotation = `${String.fromCharCode(97 + sc)}${8 - sr}`;
             const toNotation = `${String.fromCharCode(97 + c)}${8 - r}`;
-            const pTag = (turn === 'white') ? 'Putih' : 'Hitam';
+            const pTag = (turn === 'white') ? 'Touman' : 'Kantou';
+            const fullName = FULL_PIECE_NAMES[char.toUpperCase()] || 'PIECE';
             const logBox = document.getElementById('logBox');
-            logBox.innerText = `${String(moveCount).padStart(2, '0')}. [${pTag[0]}] ${movingPiece.toUpperCase()} ${fromNotation}->${toNotation}\n` + logBox.innerText;
+
+            if (castlingNotation) {
+                logBox.innerText = `${String(moveCount).padStart(2, '0')}. [${pTag[0]}] ROKADE ${castlingNotation} (${fromNotation}->${toNotation})\n` + logBox.innerText;
+            } else {
+                logBox.innerText = `${String(moveCount).padStart(2, '0')}. [${pTag[0]}] ${fullName} ${fromNotation}->${toNotation}\n` + logBox.innerText;
+            }
 
             turn = (turn === 'white') ? 'black' : 'white';
             isAnimating = false;
 
             updateGameState();
-            updateBadges();
             renderBoard();
 
-            if (gameActive && turn === botColor) {
+            if (gameActive && botColor && turn === botColor) {
                 setTimeout(makeBotMove, 300);
             }
         }
 
         function updateGameState() {
-            const opp = (turn === 'white') ? 'Hitam' : 'Putih';
+            const opp = (turn === 'white') ? 'Kantou Manji' : 'Touman v2';
             const inCheck = isInCheck(boardState, turn);
             const moves = getAllLegalMoves(boardState, turn);
 
@@ -969,14 +1247,14 @@
             } else if (!inCheck && moves.length === 0) {
                 gameActive = false;
                 statusEl.innerText = `REMIS (STALEMATE)`;
-                statusEl.style.color = "#facc15";
+                statusEl.style.color = "#e2e8f0";
                 saveGameToHistory("Remis", "Stalemate");
             } else if (inCheck) {
                 statusEl.innerText = `WARNING: SKAK (CHECK)!`;
-                statusEl.style.color = "#ef4444";
+                statusEl.style.color = "#f87171";
             } else {
-                statusEl.innerText = `STATUS: BERJALAN`;
-                statusEl.style.color = "#10b981";
+                statusEl.innerText = `STATUS: PERMAINAN DIMULAI`;
+                statusEl.style.color = "#38bdf8";
             }
         }
 
@@ -984,7 +1262,7 @@
             let score = 0;
             for (let r = 0; r < 8; r++) {
                 for (let c = 0; c < 8; c++) {
-                    const p = board[r][c];
+                    const p = getPieceChar(board[r][c]);
                     if (p !== '.') score += PIECE_VALUES[p] || 0;
                 }
             }
@@ -1008,7 +1286,7 @@
             if (isMaximizing) {
                 let maxEval = -999999;
                 for (let m of moves) {
-                    const temp = board.map(row => [...row]);
+                    const temp = cloneBoard(board);
                     temp[m.to[0]][m.to[1]] = temp[m.from[0]][m.from[1]];
                     temp[m.from[0]][m.from[1]] = '.';
                     const ev = minimax(temp, depth - 1, alpha, beta, false).score;
@@ -1023,7 +1301,7 @@
             } else {
                 let minEval = 999999;
                 for (let m of moves) {
-                    const temp = board.map(row => [...row]);
+                    const temp = cloneBoard(board);
                     temp[m.to[0]][m.to[1]] = temp[m.from[0]][m.from[1]];
                     temp[m.from[0]][m.from[1]] = '.';
                     const ev = minimax(temp, depth - 1, alpha, beta, true).score;
@@ -1039,7 +1317,7 @@
         }
 
         function makeBotMove() {
-            if (!gameActive || isAnimating) return;
+            if (!gameActive || isAnimating || !botColor) return;
             const isMaximizing = (botColor === 'white');
             const allMoves = getAllLegalMoves(boardState, botColor);
             if (allMoves.length === 0) return;
@@ -1079,7 +1357,8 @@
                         sq.className = `square ${isLight ? 'last-light' : 'last-dark'}`;
                     }
 
-                    if (selectedPos && selectedPos[0] === r && selectedPos[1] === c) {
+                    const isSelected = (selectedPos && selectedPos[0] === r && selectedPos[1] === c);
+                    if (isSelected) {
                         sq.classList.add('selected');
                     }
 
@@ -1087,15 +1366,14 @@
                         sq.classList.add('check');
                     }
 
-                    const piece = boardState[r][c];
-                    if (piece !== '.') {
-                        const isWhite = (piece === piece.toUpperCase());
-                        sq.innerHTML = `<span class="${isWhite ? 'piece-white' : 'piece-black'}">${UNICODE_PIECES[piece]}</span>`;
+                    const cell = boardState[r][c];
+                    if (getPieceChar(cell) !== '.') {
+                        sq.innerHTML = getPieceHTML(cell, isSelected);
                     }
 
                     const isTargetMove = validMoves.some(([mr, mc]) => mr === r && mc === c);
                     if (isTargetMove) {
-                        if (piece === '.') {
+                        if (getPieceChar(cell) === '.') {
                             const dot = document.createElement('div');
                             dot.className = 'valid-dot';
                             sq.appendChild(dot);
@@ -1113,6 +1391,7 @@
         }
 
         initCoords();
+        changeTheme('green');
         syncPlayerRoles();
         renderBoard();
     </script>
