@@ -1,1 +1,1144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CHESS TEAM 2 - Mobile Edition</title>
+    <style>
+        :root {
+            --bg-body: #0b1120;
+            --bg-hud: #0f172a;
+            --bg-card: #070a13;
+            --border-hud: #1e293b;
+            --accent-cyan: #38bdf8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #0284c7;
+            --text-main: #f8fafc;
+            --text-sub: #64748b;
 
+            /* Slate Classic Theme */
+            --sq-light: #e8eef6;
+            --sq-dark: #4a6584;
+            --sq-last-light: #bfdbfe;
+            --sq-last-dark: #324861;
+            --sq-selected: #7dd3fc;
+            --sq-border: #1e293b;
+            --coord-fg: #94a3b8;
+
+            /* Ukuran petak dinamis menyesuaikan layar smartphone */
+            --sq-size: min(10.8vw, 46px);
+        }
+
+        body.chess-green {
+            --sq-light: #eeeed2;
+            --sq-dark: #769656;
+            --sq-last-light: #f7f783;
+            --sq-last-dark: #baca44;
+            --sq-selected: #f6f669;
+            --sq-border: #3b5323;
+            --coord-fg: #6b8055;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px 8px 30px;
+        }
+
+        .mobile-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* HEADER MOBILE */
+        .mobile-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 6px;
+        }
+
+        .title-h1 {
+            font-family: Impact, sans-serif;
+            font-size: 20px;
+            color: var(--accent-cyan);
+            letter-spacing: 1px;
+        }
+
+        .title-sub {
+            font-family: 'Consolas', monospace;
+            font-size: 8px;
+            font-weight: bold;
+            color: var(--text-sub);
+        }
+
+        .theme-selector {
+            background: var(--bg-card);
+            border: 1px solid var(--border-hud);
+            color: var(--accent-cyan);
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            outline: none;
+        }
+
+        /* STATUS & VS BOX */
+        .vs-box {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-hud);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .player-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .player-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-turn {
+            font-family: 'Consolas', monospace;
+            font-size: 9px;
+            display: none;
+        }
+        .badge-turn.active { display: inline-block; }
+
+        .status-badge {
+            margin-top: 2px;
+            padding-top: 4px;
+            border-top: 1px solid var(--border-hud);
+            font-family: 'Consolas', monospace;
+            font-size: 11px;
+            font-weight: bold;
+            color: #facc15;
+            text-align: center;
+        }
+
+        /* PAPAN CATUR MOBILE */
+        .board-container {
+            position: relative;
+            background: #060911;
+            padding: 18px;
+            border-radius: 8px;
+            border: 2px solid var(--sq-border);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+        }
+
+        .board {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(8, var(--sq-size));
+            grid-template-rows: repeat(8, var(--sq-size));
+            border: 1px solid var(--sq-border);
+        }
+
+        .square {
+            width: var(--sq-size);
+            height: var(--sq-size);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: calc(var(--sq-size) * 0.75);
+            font-family: "Segoe UI Symbol", sans-serif;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .square.light { background-color: var(--sq-light); }
+        .square.dark { background-color: var(--sq-dark); }
+        .square.selected { background-color: var(--sq-selected) !important; }
+        .square.last-light { background-color: var(--sq-last-light); }
+        .square.last-dark { background-color: var(--sq-last-dark); }
+        .square.check { background-color: #f87171 !important; }
+
+        .piece-white {
+            color: #ffffff;
+            text-shadow: 0.6px 0 0 #1e293b, -0.6px 0 0 #1e293b, 0 0.6px 0 #1e293b, 0 -0.6px 0 #1e293b;
+        }
+
+        .piece-black {
+            color: #090d16;
+            text-shadow: 0.8px 0 0 #cbd5e1, -0.8px 0 0 #cbd5e1, 0 0.8px 0 #cbd5e1, 0 -0.8px 0 #cbd5e1;
+        }
+
+        .animated-flying-piece {
+            position: absolute;
+            width: var(--sq-size);
+            height: var(--sq-size);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: calc(var(--sq-size) * 0.75);
+            font-family: "Segoe UI Symbol", sans-serif;
+            pointer-events: none;
+            z-index: 100;
+            transform-origin: center center;
+        }
+
+        .valid-dot {
+            width: calc(var(--sq-size) * 0.28);
+            height: calc(var(--sq-size) * 0.28);
+            background-color: var(--accent-blue);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .valid-capture {
+            position: absolute;
+            inset: 2px;
+            border: 2px solid var(--accent-red);
+            pointer-events: none;
+        }
+
+        .coord-x, .coord-y {
+            position: absolute;
+            font-size: 9px;
+            font-weight: bold;
+            color: var(--coord-fg);
+            display: flex;
+        }
+
+        .coord-x {
+            left: 18px;
+            right: 18px;
+            justify-content: space-around;
+        }
+        .coord-x.top { top: 4px; }
+        .coord-x.bottom { bottom: 4px; }
+
+        .coord-y {
+            top: 18px;
+            bottom: 18px;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 14px;
+            text-align: center;
+        }
+        .coord-y.left { left: 2px; }
+        .coord-y.right { right: 2px; }
+
+        /* PANEL KONTROL BAWAH (MOBILE DOCK) */
+        .mobile-dock {
+            width: 100%;
+            background: var(--bg-hud);
+            border: 1px solid var(--border-hud);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .dock-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .card-level {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 6px 4px;
+            background: #111827;
+            border: 1px solid var(--border-hud);
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .card-level.active {
+            background: var(--accent-blue);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        select.mobile-select {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-hud);
+            color: var(--accent-cyan);
+            padding: 7px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            outline: none;
+        }
+
+        .btn-group-mobile {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+        }
+
+        button {
+            border: none;
+            padding: 10px 4px;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .btn-start { background: var(--accent-blue); }
+        .btn-reset { background: var(--accent-red); }
+        .btn-history { background: #059669; }
+
+        .log-box-mobile {
+            background: var(--bg-card);
+            border: 1px solid var(--border-hud);
+            height: 48px;
+            overflow-y: auto;
+            padding: 4px 6px;
+            font-family: 'Consolas', monospace;
+            font-size: 9px;
+            color: var(--accent-cyan);
+            white-space: pre-line;
+            border-radius: 4px;
+        }
+
+        /* MODAL POPUP MOBILE */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+        }
+
+        .modal-content {
+            background: #0b1120;
+            border: 1px solid var(--border-hud);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 440px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: var(--accent-cyan);
+            font-size: 12px;
+        }
+
+        .close-btn {
+            background: transparent;
+            color: #94a3b8;
+            font-size: 18px;
+            padding: 0 4px;
+        }
+
+        .table-wrapper {
+            background: #0f172a;
+            max-height: 240px;
+            overflow-y: auto;
+            border: 1px solid var(--border-hud);
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #1e293b;
+            color: var(--accent-cyan);
+            padding: 6px;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 6px;
+            border-bottom: 1px solid #1e293b;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        <!-- HEADER TOP -->
+        <div class="mobile-header">
+            <div>
+                <div class="title-h1">CHESS TEAM 2</div>
+                <div class="title-sub">MOBILE RESPONSIVE EDITION</div>
+            </div>
+            <select class="theme-selector" onchange="changeTheme(this.value)">
+                <option value="slate">Tema Slate</option>
+                <option value="green">Tema Hijau</option>
+            </select>
+        </div>
+
+        <!-- INFO GILIRAN & VS STATUS -->
+        <div class="vs-box">
+            <div class="player-row">
+                <div class="player-left">
+                    <span id="dotWhite" style="color:#64748b">■</span>
+                    <span id="txtWhiteStatus">PUTIH : PLAYER</span>
+                </div>
+                <span id="badgeWhite" class="badge-turn" style="color:var(--accent-cyan)">[GILIRAN]</span>
+            </div>
+            <div class="player-row">
+                <div class="player-left">
+                    <span id="dotBlack" style="color:#64748b">■</span>
+                    <span id="txtBlackStatus">HITAM : BOT AI</span>
+                </div>
+                <span id="badgeBlack" class="badge-turn" style="color:var(--accent-red)">[GILIRAN]</span>
+            </div>
+            <div class="status-badge" id="lblGameState">STATUS: MENUNGGU MULAI</div>
+        </div>
+
+        <!-- PAPAN CATUR MOBILE -->
+        <div class="board-container">
+            <div class="coord-x top" id="coord-top"></div>
+            <div class="coord-y left" id="coord-left"></div>
+            
+            <div class="board" id="chessboard"></div>
+
+            <div class="coord-x bottom" id="coord-bottom"></div>
+            <div class="coord-y right" id="coord-right"></div>
+        </div>
+
+        <!-- KONTROL BAWAH (DOCK) -->
+        <div class="mobile-dock">
+            <!-- PILIHAN TINGKAT KESULITAN -->
+            <div class="dock-row">
+                <div class="card-level" id="lvl-Pemula" onclick="setLevel('Pemula')">Pemula ★</div>
+                <div class="card-level active" id="lvl-Menengah" onclick="setLevel('Menengah')">Menengah ★★</div>
+                <div class="card-level" id="lvl-Master" onclick="setLevel('Master')">Master ★★★</div>
+            </div>
+
+            <!-- PILIHAN MODE -->
+            <select class="mobile-select" id="modeSelect" onchange="syncPlayerRoles()">
+                <option value="man_bot">Anda (Putih) vs Bot (Hitam)</option>
+                <option value="bot_man">Bot (Putih) vs Anda (Hitam)</option>
+                <option value="two_players">Main Berdua (1 Handphone)</option>
+            </select>
+
+            <!-- TOMBOL KENDALI -->
+            <div class="btn-group-mobile">
+                <button class="btn-start" onclick="startGame()">▶ MULAI</button>
+                <button class="btn-reset" onclick="resetGame(true)">↺ RESET</button>
+                <button class="btn-history" onclick="showHistoryPopup()">📊 RIWAYAT</button>
+            </div>
+
+            <!-- LOG LANGKAH MINIMALIS -->
+            <div class="log-box-mobile" id="logBox">Log langkah akan tampil di sini...</div>
+        </div>
+    </div>
+
+    <!-- POPUP MODAL RIWAYAT MOBILE -->
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>RIWAYAT PERTANDINGAN</h3>
+                <button class="close-btn" onclick="closeHistoryPopup()">✕</button>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25px; text-align:center;">#</th>
+                            <th>Mode</th>
+                            <th style="width: 55px; text-align:center;">Menang</th>
+                            <th style="width: 45px; text-align:center;">Langkah</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const UNICODE_PIECES = {
+            'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
+            'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
+        };
+
+        const PIECE_VALUES = {
+            'P': 100, 'N': 320, 'B': 330, 'R': 500, 'Q': 900, 'K': 20000,
+            'p': -100, 'n': -320, 'b': -330, 'r': -500, 'q': -900, 'k': -20000
+        };
+
+        let boardState = Array(8).fill(null).map(() => Array(8).fill('.'));
+        let turn = 'white';
+        let gameActive = false;
+        let selectedPos = null;
+        let validMoves = [];
+        let lastMove = null;
+        let moveCount = 0;
+        let aiLevel = "Menengah";
+        let playerColor = "white";
+        let botColor = "black";
+        let isAnimating = false;
+        let gameRecorded = false;
+
+        function isFlipped() {
+            return playerColor === "black";
+        }
+
+        function boardToScreen(r, c) {
+            return isFlipped() ? [7 - r, 7 - c] : [r, c];
+        }
+
+        function screenToBoard(sr, sc) {
+            return isFlipped() ? [7 - sr, 7 - sc] : [sr, sc];
+        }
+
+        function initCoords() {
+            const files = isFlipped() ? ['H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'] : ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            const ranks = isFlipped() ? ['1', '2', '3', '4', '5', '6', '7', '8'] : ['8', '7', '6', '5', '4', '3', '2', '1'];
+
+            document.getElementById('coord-top').innerHTML = files.map(f => `<span>${f}</span>`).join('');
+            document.getElementById('coord-bottom').innerHTML = files.map(f => `<span>${f}</span>`).join('');
+            document.getElementById('coord-left').innerHTML = ranks.map(r => `<span>${r}</span>`).join('');
+            document.getElementById('coord-right').innerHTML = ranks.map(r => `<span>${r}</span>`).join('');
+        }
+
+        function setLevel(lvl) {
+            aiLevel = lvl;
+            const labels = { "Pemula": "Pemula ★", "Menengah": "Menengah ★★", "Master": "Master ★★★" };
+            ["Pemula", "Menengah", "Master"].forEach(l => {
+                const el = document.getElementById(`lvl-${l}`);
+                if (l === lvl) {
+                    el.className = "card-level active";
+                    el.innerText = labels[l];
+                } else {
+                    el.className = "card-level";
+                    el.innerText = labels[l];
+                }
+            });
+        }
+
+        function changeTheme(theme) {
+            document.body.className = theme === 'green' ? 'chess-green' : '';
+        }
+
+        function syncPlayerRoles() {
+            const mode = document.getElementById('modeSelect').value;
+            if (mode === "man_bot") {
+                playerColor = "white"; botColor = "black";
+                document.getElementById('txtWhiteStatus').innerText = "PUTIH : ANDA";
+                document.getElementById('txtBlackStatus').innerText = "HITAM : BOT AI";
+            } else if (mode === "bot_man") {
+                playerColor = "black"; botColor = "white";
+                document.getElementById('txtWhiteStatus').innerText = "PUTIH : BOT AI";
+                document.getElementById('txtBlackStatus').innerText = "HITAM : ANDA";
+            } else {
+                playerColor = "both"; botColor = null;
+                document.getElementById('txtWhiteStatus').innerText = "PUTIH : PEMAIN 1";
+                document.getElementById('txtBlackStatus').innerText = "HITAM : PEMAIN 2";
+            }
+            initCoords();
+            updateBadges();
+            renderBoard();
+        }
+
+        function updateBadges() {
+            const bW = document.getElementById('badgeWhite');
+            const bB = document.getElementById('badgeBlack');
+            const dW = document.getElementById('dotWhite');
+            const dB = document.getElementById('dotBlack');
+
+            if (!gameActive) {
+                bW.classList.remove('active');
+                bB.classList.remove('active');
+                dW.style.color = "#64748b";
+                dB.style.color = "#64748b";
+                return;
+            }
+            if (turn === 'white') {
+                bW.classList.add('active');
+                bB.classList.remove('active');
+                dW.style.color = "#38bdf8";
+                dB.style.color = "#334155";
+            } else {
+                bW.classList.remove('active');
+                bB.classList.add('active');
+                dB.style.color = "#ef4444";
+                dW.style.color = "#334155";
+            }
+        }
+
+        function saveGameToHistory(winner, reason) {
+            if (gameRecorded) return;
+            const history = JSON.parse(localStorage.getItem('chess_match_history') || '[]');
+            const modeText = `${document.getElementById('modeSelect').selectedOptions[0].text} [${aiLevel}]`;
+            
+            const newRecord = {
+                id: history.length + 1,
+                mode: modeText,
+                winner: winner,
+                moves: moveCount,
+                reason: reason
+            };
+            history.unshift(newRecord);
+            localStorage.setItem('chess_match_history', JSON.stringify(history));
+            gameRecorded = true;
+        }
+
+        function showHistoryPopup() {
+            const history = JSON.parse(localStorage.getItem('chess_match_history') || '[]');
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+
+            if (history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:15px;">Belum ada data pertandingan.</td></tr>`;
+            } else {
+                history.forEach(r => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="text-align: center; color: var(--accent-cyan); font-weight:bold;">${r.id}</td>
+                        <td>${r.mode}</td>
+                        <td style="text-align: center; font-weight:bold; color:${r.winner === 'Putih' ? '#38bdf8' : (r.winner === 'Hitam' ? '#ef4444' : '#facc15')}">${r.winner}</td>
+                        <td style="text-align: center;">${r.moves}</td>
+                        <td>${r.reason}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            document.getElementById('historyModal').style.display = 'flex';
+        }
+
+        function closeHistoryPopup() {
+            document.getElementById('historyModal').style.display = 'none';
+        }
+
+        function startGame() {
+            if (isAnimating) return;
+            syncPlayerRoles();
+            gameActive = true;
+            gameRecorded = false;
+            moveCount = 0;
+            turn = 'white';
+            selectedPos = null;
+            validMoves = [];
+            lastMove = null;
+
+            boardState = [
+                ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+                ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+                ['.', '.', '.', '.', '.', '.', '.', '.'],
+                ['.', '.', '.', '.', '.', '.', '.', '.'],
+                ['.', '.', '.', '.', '.', '.', '.', '.'],
+                ['.', '.', '.', '.', '.', '.', '.', '.'],
+                ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+                ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+            ];
+
+            document.getElementById('logBox').innerText = "";
+            document.getElementById('lblGameState').innerText = "STATUS: BERJALAN";
+            document.getElementById('lblGameState').style.color = "#10b981";
+            updateBadges();
+            renderBoard();
+
+            if (turn === botColor) {
+                setTimeout(makeBotMove, 400);
+            }
+        }
+
+        function resetGame(recordAbandoned = false) {
+            if (isAnimating) return;
+            if (recordAbandoned && gameActive && moveCount > 0) {
+                saveGameToHistory("Dibatalkan", "Reset game");
+            }
+            gameActive = false;
+            turn = 'white';
+            selectedPos = null;
+            validMoves = [];
+            lastMove = null;
+            boardState = Array(8).fill(null).map(() => Array(8).fill('.'));
+            document.getElementById('logBox').innerText = "Permainan direset.";
+            document.getElementById('lblGameState').innerText = "STATUS: DIRESET";
+            document.getElementById('lblGameState').style.color = "#ef4444";
+            updateBadges();
+            renderBoard();
+        }
+
+        function getPieceColor(p) {
+            if (p === '.') return null;
+            return p === p.toUpperCase() ? 'white' : 'black';
+        }
+
+        function rawMoves(board, r, c) {
+            const p = board[r][c];
+            if (p === '.') return [];
+            const color = getPieceColor(p);
+            const oppColor = (color === 'white') ? 'black' : 'white';
+            const moves = [];
+
+            if (p.toLowerCase() === 'p') {
+                const dir = (color === 'white') ? -1 : 1;
+                const startRow = (color === 'white') ? 6 : 1;
+
+                const nr = r + dir;
+                if (nr >= 0 && nr < 8 && board[nr][c] === '.') {
+                    moves.push([nr, c]);
+                    const nr2 = r + 2 * dir;
+                    if (r === startRow && nr2 >= 0 && nr2 < 8 && board[nr2][c] === '.') {
+                        moves.push([nr2, c]);
+                    }
+                }
+
+                [-1, 1].forEach(dc => {
+                    const nc = c + dc;
+                    if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                        const target = board[nr][nc];
+                        if (target !== '.' && getPieceColor(target) === oppColor) {
+                            moves.push([nr, nc]);
+                        }
+                    }
+                });
+            } else if (p.toLowerCase() === 'n') {
+                [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]].forEach(([dr, dc]) => {
+                    const nr = r + dr, nc = c + dc;
+                    if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                        const target = board[nr][nc];
+                        if (target === '.' || getPieceColor(target) === oppColor) moves.push([nr, nc]);
+                    }
+                });
+            } else if (['r', 'b', 'q'].includes(p.toLowerCase())) {
+                let dirs = [];
+                if (['r', 'q'].includes(p.toLowerCase())) dirs.push([-1,0], [1,0], [0,-1], [0,1]);
+                if (['b', 'q'].includes(p.toLowerCase())) dirs.push([-1,-1], [-1,1], [1,-1], [1,1]);
+
+                dirs.forEach(([dr, dc]) => {
+                    let nr = r + dr, nc = c + dc;
+                    while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                        const target = board[nr][nc];
+                        if (target === '.') {
+                            moves.push([nr, nc]);
+                        } else {
+                            if (getPieceColor(target) === oppColor) moves.push([nr, nc]);
+                            break;
+                        }
+                        nr += dr; nc += dc;
+                    }
+                });
+            } else if (p.toLowerCase() === 'k') {
+                [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([dr, dc]) => {
+                    const nr = r + dr, nc = c + dc;
+                    if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                        const target = board[nr][nc];
+                        if (target === '.' || getPieceColor(target) === oppColor) moves.push([nr, nc]);
+                    }
+                });
+            }
+            return moves;
+        }
+
+        function findKing(board, color) {
+            const target = (color === 'white') ? 'K' : 'k';
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    if (board[r][c] === target) return [r, c];
+                }
+            }
+            return null;
+        }
+
+        function isSquareAttacked(board, r, c, attackerColor) {
+            const oppPawn = (attackerColor === 'white') ? 'P' : 'p';
+            const pawnDir = (attackerColor === 'white') ? 1 : -1;
+            for (let dc of [-1, 1]) {
+                let pr = r + pawnDir, pc = c + dc;
+                if (pr >= 0 && pr < 8 && pc >= 0 && pc < 8 && board[pr][pc] === oppPawn) return true;
+            }
+
+            const oppKnight = (attackerColor === 'white') ? 'N' : 'n';
+            for (let [dr, dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]) {
+                let nr = r + dr, nc = c + dc;
+                if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8 && board[nr][nc] === oppKnight) return true;
+            }
+
+            const straights = (attackerColor === 'white') ? ['R', 'Q'] : ['r', 'q'];
+            for (let [dr, dc] of [[-1,0],[1,0],[0,-1],[0,1]]) {
+                let nr = r + dr, nc = c + dc;
+                while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                    if (board[nr][nc] !== '.') {
+                        if (straights.includes(board[nr][nc])) return true;
+                        break;
+                    }
+                    nr += dr; nc += dc;
+                }
+            }
+
+            const diags = (attackerColor === 'white') ? ['B', 'Q'] : ['b', 'q'];
+            for (let [dr, dc] of [[-1,-1],[-1,1],[1,-1],[1,1]]) {
+                let nr = r + dr, nc = c + dc;
+                while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                    if (board[nr][nc] !== '.') {
+                        if (diags.includes(board[nr][nc])) return true;
+                        break;
+                    }
+                    nr += dr; nc += dc;
+                }
+            }
+
+            const oppKing = (attackerColor === 'white') ? 'K' : 'k';
+            for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                    if (dr === 0 && dc === 0) continue;
+                    let nr = r + dr, nc = c + dc;
+                    if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8 && board[nr][nc] === oppKing) return true;
+                }
+            }
+            return false;
+        }
+
+        function isInCheck(board, color) {
+            const k = findKing(board, color);
+            if (!k) return false;
+            const opp = (color === 'white') ? 'black' : 'white';
+            return isSquareAttacked(board, k[0], k[1], opp);
+        }
+
+        function getLegalMoves(board, r, c, curTurn) {
+            const p = board[r][c];
+            if (p === '.' || getPieceColor(p) !== curTurn) return [];
+            const color = getPieceColor(p);
+            const candidates = rawMoves(board, r, c);
+            const legal = [];
+
+            candidates.forEach(([mr, mc]) => {
+                const temp = board.map(row => [...row]);
+                temp[mr][mc] = temp[r][c];
+                temp[r][c] = '.';
+                if (!isInCheck(temp, color)) legal.push([mr, mc]);
+            });
+            return legal;
+        }
+
+        function getAllLegalMoves(board, color) {
+            const list = [];
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    if (board[r][c] !== '.' && getPieceColor(board[r][c]) === color) {
+                        const m = getLegalMoves(board, r, c, color);
+                        m.forEach(to => list.push({ from: [r, c], to }));
+                    }
+                }
+            }
+            return list;
+        }
+
+        function handleSquareClick(r, c) {
+            if (!gameActive || isAnimating || turn === botColor) return;
+            const piece = boardState[r][c];
+
+            if (!selectedPos) {
+                if (piece !== '.' && getPieceColor(piece) === turn) {
+                    selectedPos = [r, c];
+                    validMoves = getLegalMoves(boardState, r, c, turn);
+                }
+            } else {
+                const [sr, sc] = selectedPos;
+                const isMoveValid = validMoves.some(([mr, mc]) => mr === r && mc === c);
+
+                if (isMoveValid) {
+                    executeMove(sr, sc, r, c);
+                    return;
+                } else {
+                    if (piece !== '.' && getPieceColor(piece) === turn) {
+                        selectedPos = [r, c];
+                        validMoves = getLegalMoves(boardState, r, c, turn);
+                    } else {
+                        selectedPos = null;
+                        validMoves = [];
+                    }
+                }
+            }
+            renderBoard();
+        }
+
+        function executeMove(sr, sc, r, c) {
+            isAnimating = true;
+            let movingPiece = boardState[sr][sc];
+            boardState[sr][sc] = '.';
+            validMoves = [];
+            selectedPos = null;
+            renderBoard();
+
+            const [scr_sr, scr_sc] = boardToScreen(sr, sc);
+            const [scr_r, scr_c] = boardToScreen(r, c);
+
+            const boardEl = document.getElementById('chessboard');
+            const sqWidth = boardEl.clientWidth / 8;
+
+            const startX = scr_sc * sqWidth;
+            const startY = scr_sr * sqWidth;
+            const targetX = scr_c * sqWidth;
+            const targetY = scr_r * sqWidth;
+
+            const flyingEl = document.createElement('div');
+            flyingEl.className = `animated-flying-piece ${movingPiece === movingPiece.toUpperCase() ? 'piece-white' : 'piece-black'}`;
+            flyingEl.innerText = UNICODE_PIECES[movingPiece];
+            boardEl.appendChild(flyingEl);
+
+            const totalFrames = 12;
+            const frameInterval = 16;
+            let currentFrame = 0;
+
+            function animate() {
+                if (currentFrame <= totalFrames) {
+                    const t = currentFrame / totalFrames;
+                    const easeT = t * t * (3 - 2 * t);
+                    const currX = startX + (targetX - startX) * easeT;
+                    const currY = startY + (targetY - startY) * easeT;
+                    const scaleLift = 1 + 0.15 * (4 * t * (1 - t));
+
+                    flyingEl.style.transform = `translate(${currX}px, ${currY}px) scale(${scaleLift})`;
+                    currentFrame++;
+                    setTimeout(animate, frameInterval);
+                } else {
+                    flyingEl.remove();
+                    finalizeMove(sr, sc, r, c, movingPiece);
+                }
+            }
+            animate();
+        }
+
+        function finalizeMove(sr, sc, r, c, movingPiece) {
+            moveCount++;
+
+            if (movingPiece === 'P' && r === 0) movingPiece = 'Q';
+            if (movingPiece === 'p' && r === 7) movingPiece = 'q';
+
+            boardState[r][c] = movingPiece;
+            lastMove = [[sr, sc], [r, c]];
+
+            const fromNotation = `${String.fromCharCode(97 + sc)}${8 - sr}`;
+            const toNotation = `${String.fromCharCode(97 + c)}${8 - r}`;
+            const pTag = (turn === 'white') ? 'Putih' : 'Hitam';
+            const logBox = document.getElementById('logBox');
+            logBox.innerText = `${String(moveCount).padStart(2, '0')}. [${pTag[0]}] ${movingPiece.toUpperCase()} ${fromNotation}->${toNotation}\n` + logBox.innerText;
+
+            turn = (turn === 'white') ? 'black' : 'white';
+            isAnimating = false;
+
+            updateGameState();
+            updateBadges();
+            renderBoard();
+
+            if (gameActive && turn === botColor) {
+                setTimeout(makeBotMove, 300);
+            }
+        }
+
+        function updateGameState() {
+            const opp = (turn === 'white') ? 'Hitam' : 'Putih';
+            const inCheck = isInCheck(boardState, turn);
+            const moves = getAllLegalMoves(boardState, turn);
+
+            const statusEl = document.getElementById('lblGameState');
+            if (inCheck && moves.length === 0) {
+                gameActive = false;
+                statusEl.innerText = `SKAKMAT! ${opp.toUpperCase()} MENANG`;
+                statusEl.style.color = "#ef4444";
+                saveGameToHistory(opp, "Skakmat");
+            } else if (!inCheck && moves.length === 0) {
+                gameActive = false;
+                statusEl.innerText = `REMIS (STALEMATE)`;
+                statusEl.style.color = "#facc15";
+                saveGameToHistory("Remis", "Stalemate");
+            } else if (inCheck) {
+                statusEl.innerText = `WARNING: SKAK (CHECK)!`;
+                statusEl.style.color = "#ef4444";
+            } else {
+                statusEl.innerText = `STATUS: BERJALAN`;
+                statusEl.style.color = "#10b981";
+            }
+        }
+
+        function evaluateBoard(board) {
+            let score = 0;
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const p = board[r][c];
+                    if (p !== '.') score += PIECE_VALUES[p] || 0;
+                }
+            }
+            return score;
+        }
+
+        function minimax(board, depth, alpha, beta, isMaximizing) {
+            if (depth === 0) return { score: evaluateBoard(board), move: null };
+            const curTurn = isMaximizing ? 'white' : 'black';
+            const moves = getAllLegalMoves(board, curTurn);
+
+            if (moves.length === 0) {
+                if (isInCheck(board, curTurn)) {
+                    return { score: isMaximizing ? -99999 : 99999, move: null };
+                }
+                return { score: 0, move: null };
+            }
+
+            let bestMove = moves[Math.floor(Math.random() * moves.length)];
+
+            if (isMaximizing) {
+                let maxEval = -999999;
+                for (let m of moves) {
+                    const temp = board.map(row => [...row]);
+                    temp[m.to[0]][m.to[1]] = temp[m.from[0]][m.from[1]];
+                    temp[m.from[0]][m.from[1]] = '.';
+                    const ev = minimax(temp, depth - 1, alpha, beta, false).score;
+                    if (ev > maxEval) {
+                        maxEval = ev;
+                        bestMove = m;
+                    }
+                    alpha = Math.max(alpha, ev);
+                    if (beta <= alpha) break;
+                }
+                return { score: maxEval, move: bestMove };
+            } else {
+                let minEval = 999999;
+                for (let m of moves) {
+                    const temp = board.map(row => [...row]);
+                    temp[m.to[0]][m.to[1]] = temp[m.from[0]][m.from[1]];
+                    temp[m.from[0]][m.from[1]] = '.';
+                    const ev = minimax(temp, depth - 1, alpha, beta, true).score;
+                    if (ev < minEval) {
+                        minEval = ev;
+                        bestMove = m;
+                    }
+                    beta = Math.min(beta, ev);
+                    if (beta <= alpha) break;
+                }
+                return { score: minEval, move: bestMove };
+            }
+        }
+
+        function makeBotMove() {
+            if (!gameActive || isAnimating) return;
+            const isMaximizing = (botColor === 'white');
+            const allMoves = getAllLegalMoves(boardState, botColor);
+            if (allMoves.length === 0) return;
+
+            let chosenMove = null;
+            if (aiLevel === "Pemula") {
+                if (Math.random() < 0.6) {
+                    chosenMove = allMoves[Math.floor(Math.random() * allMoves.length)];
+                } else {
+                    chosenMove = minimax(boardState, 1, -999999, 999999, isMaximizing).move;
+                }
+            } else if (aiLevel === "Menengah") {
+                chosenMove = minimax(boardState, 2, -999999, 999999, isMaximizing).move;
+            } else {
+                chosenMove = minimax(boardState, 3, -999999, 999999, isMaximizing).move;
+            }
+
+            if (chosenMove) {
+                executeMove(chosenMove.from[0], chosenMove.from[1], chosenMove.to[0], chosenMove.to[1]);
+            }
+        }
+
+        function renderBoard() {
+            const boardEl = document.getElementById('chessboard');
+            boardEl.innerHTML = '';
+
+            const kingCheck = (gameActive && isInCheck(boardState, turn)) ? findKing(boardState, turn) : null;
+
+            for (let scr_r = 0; scr_r < 8; scr_r++) {
+                for (let scr_c = 0; scr_c < 8; scr_c++) {
+                    const [r, c] = screenToBoard(scr_r, scr_c);
+                    const sq = document.createElement('div');
+                    const isLight = (r + c) % 2 === 0;
+                    sq.className = `square ${isLight ? 'light' : 'dark'}`;
+
+                    if (lastMove && ((r === lastMove[0][0] && c === lastMove[0][1]) || (r === lastMove[1][0] && c === lastMove[1][1]))) {
+                        sq.className = `square ${isLight ? 'last-light' : 'last-dark'}`;
+                    }
+
+                    if (selectedPos && selectedPos[0] === r && selectedPos[1] === c) {
+                        sq.classList.add('selected');
+                    }
+
+                    if (kingCheck && kingCheck[0] === r && kingCheck[1] === c) {
+                        sq.classList.add('check');
+                    }
+
+                    const piece = boardState[r][c];
+                    if (piece !== '.') {
+                        const isWhite = (piece === piece.toUpperCase());
+                        sq.innerHTML = `<span class="${isWhite ? 'piece-white' : 'piece-black'}">${UNICODE_PIECES[piece]}</span>`;
+                    }
+
+                    const isTargetMove = validMoves.some(([mr, mc]) => mr === r && mc === c);
+                    if (isTargetMove) {
+                        if (piece === '.') {
+                            const dot = document.createElement('div');
+                            dot.className = 'valid-dot';
+                            sq.appendChild(dot);
+                        } else {
+                            const cap = document.createElement('div');
+                            cap.className = 'valid-capture';
+                            sq.appendChild(cap);
+                        }
+                    }
+
+                    sq.onclick = () => handleSquareClick(r, c);
+                    boardEl.appendChild(sq);
+                }
+            }
+        }
+
+        initCoords();
+        renderBoard();
+    </script>
+</body>
+</html>
